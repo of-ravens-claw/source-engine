@@ -538,7 +538,6 @@ def configure(conf):
 	else:
 		cflags += [
 			'/I'+os.path.abspath('.')+'/thirdparty/SDL',
-			'/arch:SSE' if conf.env.DEST_CPU == 'x86' else '/arch:AVX',
 			'/GF',
 			'/Gy',
 			'/fp:fast',
@@ -548,22 +547,38 @@ def configure(conf):
 			'/TP',
 			'/EHsc'
 		]
+		
+		if conf.env.DEST_CPU == 'x86': 
+			cflags += [ '/arch:SSE' ]
+		else:
+			cflags += [ '/arch:AVX']
+		
+		# Should we use MT (Statically linked) or MD (DLL)?
+		# DEBUG_ENGINE must use one of the Debug CRT variants, since it defines DEBUG and _DEBUG
+		#
+		# This will override the previous declaration (in my case, it always seems to be /MT)
+		# This works fine, but you may want to fix it properly.
+		# I do not know enough Python in order to do so, and thus, I won't bother.
+		if conf.options.DEBUG_ENGINE:
+			cflags += [ '/MTd' ]
+		else:
+			cflags += [ '/MT' ]
 
 		if conf.options.BUILD_TYPE == 'debug':
 			linkflags += [
-				'/FORCE:MULTIPLE',
+				'/FORCE:MULTIPLE', # We should probably fix this properly.
 				'/INCREMENTAL:NO',
-				'/NODEFAULTLIB:libc',
-				'/NODEFAULTLIB:libcd',
-				'/NODEFAULTLIB:libcmt',
+				#'/NODEFAULTLIB:libc',
+				#'/NODEFAULTLIB:libcd',
+				#'/NODEFAULTLIB:libcmt',
 				'/LARGEADDRESSAWARE'
 			]
 		else:
 			linkflags += [
 				'/INCREMENTAL',
-				'/NODEFAULTLIB:libc',
-				'/NODEFAULTLIB:libcd',
-				'/NODEFAULTLIB:libcmtd',
+				#'/NODEFAULTLIB:libc',
+				#'/NODEFAULTLIB:libcd',
+				#'/NODEFAULTLIB:libcmtd',
 				'/LARGEADDRESSAWARE'
 			]
 
