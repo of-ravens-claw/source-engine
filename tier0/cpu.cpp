@@ -60,11 +60,11 @@ static bool cpuid(uint32 function, uint32& out_eax, uint32& out_ebx, uint32& out
 #else
 	bool retval = true;
 	uint32 local_eax, local_ebx, local_ecx, local_edx;
-	_asm pushad;
+	__asm pushad;
 
 	__try
 	{
-        _asm
+        __asm
 		{
 			xor edx, edx		// Clue the compiler that EDX is about to be used.
             mov eax, function   // set up CPUID to return processor version and features
@@ -86,7 +86,7 @@ static bool cpuid(uint32 function, uint32& out_eax, uint32& out_ebx, uint32& out
 	out_ecx = local_ecx;
 	out_edx = local_edx;
 
-	_asm popad
+	__asm popad
 
 	return retval;
 #endif
@@ -236,11 +236,8 @@ bool CheckSSE42Technology(void)
 #if defined( _X360 ) || defined( _PS3 ) || defined(__SANITIZE_ADDRESS__) || defined (__arm__)
 	return false;
 #else
-	// SSE4.2 is an Intel-only feature
-
-	const char *pchVendor = GetProcessorVendorId();
-	if ( 0 != V_tier0_stricmp( pchVendor, "GenuineIntel" ) )
-		return false;
+	// SSE 4.2 is implemented by both Intel and AMD
+	// detection is done the same way for both vendors
 
 	uint32 eax,ebx,edx,ecx;
 	if( !cpuid(1,eax,ebx,ecx,edx) )
@@ -348,10 +345,6 @@ const tchar* GetProcessorVendorId()
 		if ( IsPC() )
 		{
 			_tcscpy( VendorID, _T( "Generic_x86" ) ); 
-		}
-		else if ( IsX360() )
-		{
-			_tcscpy( VendorID, _T( "PowerPC" ) ); 
 		}
 	}
 	else

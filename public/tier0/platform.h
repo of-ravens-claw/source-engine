@@ -488,7 +488,7 @@ typedef void * HINSTANCE;
 // C functions for external declarations that call the appropriate C++ methods
 #ifndef EXPORT
 	#ifdef _WIN32
-		#define EXPORT	_declspec( dllexport )
+		#define EXPORT	__declspec( dllexport )
 	#else
 		#define EXPORT	/* */
 	#endif
@@ -503,9 +503,8 @@ typedef void * HINSTANCE;
 // decls for aligning data
 #ifdef _WIN32
         #define DECL_ALIGN(x) __declspec(align(x))
-
 #elif GNUC
-	#define DECL_ALIGN(x) __attribute__((aligned(x)))
+        #define DECL_ALIGN(x) __attribute__((aligned(x)))
 #else
         #define DECL_ALIGN(x) /* */
 #endif
@@ -585,7 +584,7 @@ typedef void * HINSTANCE;
 	#define CONSTRUCT_EARLY __attribute__((init_priority(101)))
 #else
 	#define CONSTRUCT_EARLY
-	#endif
+#endif
 
 #if defined(_MSC_VER)
 	#define SELECTANY __declspec(selectany)

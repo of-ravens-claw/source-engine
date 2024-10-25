@@ -310,7 +310,7 @@ def options(opt):
 		help = 'build using ccache [default: %default]')
 
 	grp.add_option('--disable-warns', action = 'store_true', dest = 'DISABLE_WARNS', default = False,
-		help = 'build using ccache [default: %default]')
+		help = 'Disable compiler warnings [%default]')
 
 	grp.add_option('--togles', action = 'store_true', dest = 'TOGLES', default = False,
 		help = 'build engine with ToGLES [default: %default]')
